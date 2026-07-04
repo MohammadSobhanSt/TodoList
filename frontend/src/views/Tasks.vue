@@ -2,7 +2,7 @@
 import { ref } from "vue"
 import Draggable from "vuedraggable"
 
-let id = 4
+let id = 0
 
 const tasks = ref([
   { id: 1, title: "کامل کردن فرانت", description: "", completed: false, showDescription: false},
@@ -29,11 +29,12 @@ function addTask() {
 <template>
     <h5 class="text-center">ToDo List</h5><br>
     <div class="d-flex justify-content-center mx-2">
-        <div class="card">
+        <div class="card" id="addTaskCard">
             <div class="card-body">
                 <div class="card-title">
                     <h5 class="text-white">New Task</h5>
                 </div>
+                <span class="text-danger">*</span>
                 <input type="text" class="form-control" placeholder="add a task" id="addTaskInput" @keyup.enter="addTask()" v-model="addTaskInput"/>
                 <br>
                 <textarea class="form-control" placeholder="add a description" id="addDescriptionInput" @keyup.enter="addTask()" v-model="addDescriptionInput"/>
@@ -84,11 +85,11 @@ function addTask() {
 }
 
 #addTaskInput {
- width: 17rem;
+ width: 32rem;
 }
 
 #addDescriptionInput {
- width: 17rem;
+ width: 32rem;
 }
 
 #addTaskButton {
@@ -98,5 +99,10 @@ function addTask() {
 #showDescription {
     color: #7a7d7b;
     cursor: pointer;
+}
+
+#addTaskCard {
+    width: 35rem;
+    height: 18rem;
 }
 </style>
