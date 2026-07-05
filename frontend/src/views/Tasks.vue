@@ -1,14 +1,29 @@
 <script setup>
-import { ref } from "vue"
+import { ref, watch } from "vue"
 import Draggable from "vuedraggable"
 
-let id = 0
+let id = 4
 
-const tasks = ref([
-  { id: 1, title: "کامل کردن فرانت", description: "", completed: false, showDescription: false},
-  { id: 2, title: "Build Todo App", description: "", completed: false, showDescription: false},
-  { id: 3, title: "Deploy Project", description: "", completed: false, showDescription: false},
-])
+const defaultTasks = [
+  { id: 1, title: "کامل کردن فرانت", description: "", completed: false, showDescription: false },
+  { id: 2, title: "Build Todo App", description: "", completed: false, showDescription: false },
+  { id: 3, title: "Deploy Project", description: "", completed: false, showDescription: false },
+]
+
+const tasks = ref(JSON.parse(localStorage.getItem("tasks")) || defaultTasks)
+
+watch(tasks,
+  (newTasks) => {
+    localStorage.setItem("tasks", JSON.stringify(newTasks))},
+    { deep: true })
+
+// We could write the code above like:
+// function saveTasks(newTasks) {
+//   localStorage.setItem("tasks", JSON.stringify(newTasks)),
+//   { deep: true }
+// }
+// watch(tasks, saveTasks)
+
 
 function showDes(task) {
   task.showDescription = !task.showDescription
@@ -75,6 +90,7 @@ function addTask() {
   padding: 10px;
   margin: 8px 0;
   width: 20rem;
+  min-height: 4rem;
   border: 1px solid #7a7d7b;
   color: lightgoldenrodyellow;
 }
