@@ -2,12 +2,10 @@
 import { ref, watch } from "vue"
 import Draggable from "vuedraggable"
 
-let id = 4
+let id = 0
 
 const defaultTasks = [
-  { id: 1, title: "کامل کردن فرانت", description: "", completed: false, showDescription: false },
-  { id: 2, title: "Build Todo App", description: "", completed: false, showDescription: false },
-  { id: 3, title: "Deploy Project", description: "", completed: false, showDescription: false },
+  { id: 0, title: "Deploy Project", description: "", completed: false, showDescription: false },
 ]
 
 const tasks = ref(JSON.parse(localStorage.getItem("tasks")) || defaultTasks)
@@ -19,9 +17,9 @@ watch(tasks,
 
 // We could write the code above like:
 // function saveTasks(newTasks) {
-//   localStorage.setItem("tasks", JSON.stringify(newTasks)),
+//   localStorage.setItem("tasks", JSON.stringify(newTasks))},
 //   { deep: true }
-// }
+// 
 // watch(tasks, saveTasks)
 
 
@@ -39,23 +37,32 @@ function addTask() {
     addDescriptionInput.value = ''
   };
 }
+
+var showAddTask = ref(true)
 </script>
 
 <template>
     <h5 class="text-center">ToDo List</h5><br>
-    <div class="d-flex justify-content-center mx-2">
-        <div class="card" id="addTaskCard">
-            <div class="card-body">
-                <div class="card-title">
-                    <h5 class="text-white">New Task</h5>
-                </div>
-                <span class="text-danger">*</span>
-                <input type="text" class="form-control" placeholder="add a task" id="addTaskInput" @keyup.enter="addTask()" v-model="addTaskInput"/>
-                <br>
-                <textarea class="form-control" placeholder="add a description" id="addDescriptionInput" @keyup.enter="addTask()" v-model="addDescriptionInput"/>
-                <br>
-                <div class="d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary mx-2" id="addTaskButton" @click="addTask()">add</button>    
+    <div class="text-center">
+        <span id="showAddTaskBtn" @click.prevent="showAddTask = !showAddTask">
+            {{ showAddTask ? 'Hide card' : 'Show card' }}
+        </span>
+    </div>
+    <div v-show="showAddTask">
+        <div class="d-flex justify-content-center mx-2">
+            <div class="card" id="addTaskCard">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5 class="text-white">New Task</h5>
+                    </div>
+                    <span class="text-danger">*</span>
+                    <input type="text" class="form-control" placeholder="add a task" id="addTaskInput" @keyup.enter="addTask()" v-model="addTaskInput"/>
+                    <br>
+                    <textarea class="form-control" placeholder="add a description" id="addDescriptionInput" @keyup.enter="addTask()" v-model="addDescriptionInput"/>
+                    <br>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary mx-2" id="addTaskButton" @click="addTask()">add</button>    
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,9 +73,11 @@ function addTask() {
             <div class="d-flex justify-content-center">
                 <div class="card">
                     <div class="card-body">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" :id="'check-' + element.id" v-model="element.completed"/>
-                            <label class="form-check-label" :for="'check-' + element.id" @click.prevent>
+                        <div class="d-flex">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" :id="'check-' + element.id" v-model="element.completed"/>
+                            </div>
+                            <label :for="'check-' + element.id">
                                 <s v-if="element.completed">{{ element.title }}</s>
                                 <span v-else>{{ element.title }}</span>
                                 <span v-show="element.showDescription"><hr>{{ element.description }}</span>
@@ -120,5 +129,11 @@ function addTask() {
 #addTaskCard {
     width: 35rem;
     height: 18rem;
+}
+
+#showAddTaskBtn {
+    color: lightgray;
+    cursor: pointer;
+    user-select: none;
 }
 </style>
