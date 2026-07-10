@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from "vue"
 import Draggable from "vuedraggable"
+import { SquarePen, Shredder, Check, X } from "@lucide/vue"
 
 let id = 0
 
@@ -39,13 +40,18 @@ function addTask() {
 }
 
 var showAddTask = ref(true)
+
+const editingTaskId = ref(null)
+const vFocus = {
+  mounted: (el) => el.focus()
+}
 </script>
 
 <template>
     <h5 class="text-center">ToDo List</h5><br>
     <div class="text-center">
         <span id="showAddTaskBtn" @click.prevent="showAddTask = !showAddTask">
-            {{ showAddTask ? 'Hide card' : 'Show card' }}
+            {{ showAddTask ? 'Hide form' : 'Show form' }}
         </span>
     </div>
     <div v-show="showAddTask">
@@ -73,18 +79,35 @@ var showAddTask = ref(true)
             <div class="d-flex justify-content-center">
                 <div class="card">
                     <div class="card-body">
-                        <div class="d-flex">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" :id="'check-' + element.id" v-model="element.completed"/>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" v-model="element.completed"/>
+                                </div>
+                                <label v-if="editingTaskId !== element.id">
+                                    <s v-if="element.completed">{{ element.title }}</s>
+                                    <span v-else>{{ element.title }}</span>
+                                </label>
+                                <input type="text" class="editInput" id="editInput" v-else v-focus v-model="element.title" @keyup.enter="editingTaskId = null, element.title = editInput.value" @blur="editingTaskId = null"/>
                             </div>
-                            <label :for="'check-' + element.id">
-                                <s v-if="element.completed">{{ element.title }}</s>
-                                <span v-else>{{ element.title }}</span>
-                                <span v-show="element.showDescription"><hr>{{ element.description }}</span>
-                            </label>
+                            <div class="d-flex gap-2 align-items-center" v-if="editingTaskId !== element.id">
+                                <SquarePen size="16" id="squarePen" @click="editingTaskId = element.id"/>
+                                <Shredder size="16" class="text-danger" id="shredder"/>
+                            </div>
+                            <div class="d-flex gap-2 align-items-center" v-else>
+                                <Check size="16" id="squarePen" @click="element.title = editInput.value"/>
+                                <X size="16" id="shredder" @click="editingTaskId = null"/>
+                            </div>
+                        </div>
+                        <div v-show="element.showDescription">
+                            <hr style="width: 7rem;">{{ element.description }}
                         </div>
                     </div>
-                    <span v-if="element.description" class="d-flex justify-content-end" id="showDescription" @click="showDes(element)">...</span>
+                    <small v-if="element.description" class="d-flex justify-content-end">
+                        <span id="showDescription" @click="showDes(element)">
+                            ...
+                        </span>
+                    </small>
                 </div>
             </div>
         </template>
@@ -135,5 +158,23 @@ var showAddTask = ref(true)
     color: lightgray;
     cursor: pointer;
     user-select: none;
+}
+
+#squarePen, #shredder {
+    cursor: pointer;
+}
+
+.editInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+  padding: 0;
+}
+
+.editInput:focus {
+  outline: none;
 }
 </style>
