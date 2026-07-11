@@ -3,10 +3,8 @@ import { ref, watch } from "vue"
 import Draggable from "vuedraggable"
 import { SquarePen, Shredder, Check, X } from "@lucide/vue"
 
-let id = 0
-
 const defaultTasks = [
-  { id: 0, title: "Deploy Project", description: "", completed: false, showDescription: false },
+  { id: crypto.randomUUID(), title: "Deploy Project", description: "", completed: false, showDescription: false },
 ]
 
 const tasks = ref(JSON.parse(localStorage.getItem("tasks")) || defaultTasks)
@@ -33,7 +31,7 @@ const addDescriptionInput = ref('')
 
 function addTask() {
   if (addTaskInput.value){
-    tasks.value.push({ id: id++, title: addTaskInput.value, description: addDescriptionInput.value.trim(), completed: false, showDescription: false })
+    tasks.value.push({ id: crypto.randomUUID(), title: addTaskInput.value, description: addDescriptionInput.value.trim(), completed: false, showDescription: false })
     addTaskInput.value = ''
     addDescriptionInput.value = ''
   };
