@@ -33,10 +33,17 @@ const addDescriptionInput = ref('')
 
 function addTask() {
   if (addTaskInput.value){
-    tasks.value.push({ id: id++, title: addTaskInput.value, description: addDescriptionInput.value, completed: false, showDescription: false })
+    tasks.value.push({ id: id++, title: addTaskInput.value, description: addDescriptionInput.value.trim(), completed: false, showDescription: false })
     addTaskInput.value = ''
     addDescriptionInput.value = ''
   };
+}
+
+function deleteTask(taskId) {
+  const task = tasks.value.findIndex(task => task.id === taskId)
+  if (task !== -1) {
+    tasks.value.splice(task, 1)
+  }
 }
 
 var showAddTask = ref(true)
@@ -64,7 +71,7 @@ const vFocus = {
                     <span class="text-danger">*</span>
                     <input type="text" class="form-control" placeholder="add a task" id="addTaskInput" @keyup.enter="addTask()" v-model="addTaskInput"/>
                     <br>
-                    <textarea class="form-control" placeholder="add a description" id="addDescriptionInput" @keyup.enter="addTask()" v-model="addDescriptionInput"/>
+                    <textarea class="form-control" placeholder="add a description" id="addDescriptionInput" v-model="addDescriptionInput"/>
                     <br>
                     <div class="d-flex justify-content-center">
                         <button type="submit" class="btn btn-primary mx-2" id="addTaskButton" @click="addTask()">add</button>    
@@ -74,7 +81,7 @@ const vFocus = {
         </div>
     </div>
     <hr>
-    <Draggable v-model="tasks" item-key="id" animation="500">
+    <Draggable v-model="tasks" item-key="id" animation="300" :disabled="editingTaskId !== null">
         <template #item="{ element }">
             <div class="d-flex justify-content-center">
                 <div class="card">
@@ -84,18 +91,18 @@ const vFocus = {
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" v-model="element.completed"/>
                                 </div>
-                                <label v-if="editingTaskId !== element.id">
+                                <label v-if="editingTaskId !== element.id" class="mx-2">
                                     <s v-if="element.completed">{{ element.title }}</s>
                                     <span v-else>{{ element.title }}</span>
                                 </label>
-                                <input type="text" class="editInput" id="editInput" v-else v-focus v-model="element.title" @keyup.enter="editingTaskId = null, element.title = editInput.value" @blur="editingTaskId = null"/>
+                                <input type="text" class="editInput mx-2" id="editInput" v-else v-focus v-model="element.title" @keyup.enter="editingTaskId = null" @blur="editingTaskId = null"/>
                             </div>
                             <div class="d-flex gap-2 align-items-center" v-if="editingTaskId !== element.id">
                                 <SquarePen size="16" id="squarePen" @click="editingTaskId = element.id"/>
-                                <Shredder size="16" class="text-danger" id="shredder"/>
+                                <Shredder size="16" class="text-danger" id="shredder" @click="deleteTask(element.id)"/>
                             </div>
                             <div class="d-flex gap-2 align-items-center" v-else>
-                                <Check size="16" id="squarePen" @click="element.title = editInput.value"/>
+                                <Check size="16" id="squarePen" @click="editingTaskId = null"/>
                                 <X size="16" id="shredder" @click="editingTaskId = null"/>
                             </div>
                         </div>
@@ -121,10 +128,18 @@ const vFocus = {
   font-family: "Vazirmatn", sans-serif;
   padding: 10px;
   margin: 8px 0;
-  width: 20rem;
+  width: 30rem;
   min-height: 4rem;
   border: 1px solid #7a7d7b;
   color: lightgoldenrodyellow;
+}
+
+.card-body label,
+.card-body span {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 20rem;
+  display: inline-block;
 }
 
 .form-check-input:checked {
@@ -170,8 +185,7 @@ const vFocus = {
   background: transparent;
   font: inherit;
   color: inherit;
-  width: 100%;
-  padding: 0;
+  width: 20rem;
 }
 
 .editInput:focus {
