@@ -87,15 +87,19 @@ const vFocus = {
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-start">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" v-model="element.completed"/>
                                 </div>
-                                <label v-if="editingTaskId !== element.id" class="mx-2">
+                                <label v-if="editingTaskId !== element.id">
                                     <s v-if="element.completed">{{ element.title }}</s>
                                     <span v-else>{{ element.title }}</span>
                                 </label>
-                                <input type="text" class="editInput mx-2" id="editInput" v-else v-focus v-model="element.title" @keyup.enter="editingTaskId = null" @blur="editingTaskId = null"/>
+                                <div v-else class="editInput">
+                                  <input type="text" class="editInput" v-focus v-model="element.title" @keyup.enter="editingTaskId = null"/>
+                                  <hr>
+                                  <textarea class="editInput" v-model="element.description"></textarea>
+                                </div>
                             </div>
                             <div class="d-flex gap-2 align-items-center" v-if="editingTaskId !== element.id">
                                 <SquarePen size="16" id="squarePen" @click="editingTaskId = element.id"/>
@@ -106,7 +110,7 @@ const vFocus = {
                                 <X size="16" id="shredder" @click="editingTaskId = null"/>
                             </div>
                         </div>
-                        <div v-show="element.showDescription">
+                        <div v-show="element.showDescription && editingTaskId === null">
                             <hr style="width: 7rem;">{{ element.description }}
                         </div>
                     </div>
