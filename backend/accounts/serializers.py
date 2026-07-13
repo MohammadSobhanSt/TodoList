@@ -32,3 +32,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
             username=data["username"],
             password=data["password1"]
         )
+        
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(style={'input_type': 'password'},)
