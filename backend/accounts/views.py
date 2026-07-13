@@ -1,6 +1,7 @@
-from rest_framework.views import APIView, Response, status
+from rest_framework.views import status
+from rest_framework.generics import CreateAPIView
+from . import serializers
 
 
-class RegistrationView(APIView):
-    def get(self, request):
-        return Response("This is home", status=status.HTTP_200_OK)
+class RegistrationView(CreateAPIView):
+    serializer_class = serializers.RegistrationSerializer
