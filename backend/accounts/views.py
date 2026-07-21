@@ -1,10 +1,11 @@
 from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from . import serializers
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 
 class RegistrationView(CreateAPIView):
@@ -39,3 +40,11 @@ class LoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         return Response({"error":"You are already logged in."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        logout(request)
+        return Response({"success": "You logged out successfully."}, status=status.HTTP_204_NO_CONTENT)
