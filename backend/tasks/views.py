@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView, RetrieveDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from . import serializers
@@ -22,6 +22,14 @@ class TaskListView(ListAPIView):
 
 
 class TaskUpdateView(RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.TaskSerializer
+
+    def get_queryset(self):
+        return Task.objects.filter(author=self.request.user)
+
+
+class TaskDeleteView(RetrieveDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.TaskSerializer
 
