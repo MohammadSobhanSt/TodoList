@@ -1,14 +1,15 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 import datetime
 
+today = datetime.datetime.now().date()
 
-today = datetime.date.today()
 
 class Task(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tasks")
     title = models.CharField()
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
+    completed = models.BooleanField(default=False)
     start_time = models.DateField(default=today)
     deadline = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
