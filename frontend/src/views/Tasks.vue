@@ -361,6 +361,15 @@ onMounted(() => {
     color: lightyellow;
 }
 
+.card {
+    font-family: "Vazirmatn", sans-serif;
+}
+
+.form-check-input:checked {
+  background-color: #133b38;
+  border-color: #133b38;
+}
+
 .custom-card {
     font-family: "Vazirmatn", sans-serif;
     padding: 10px;
